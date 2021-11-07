@@ -4,7 +4,7 @@ type Action = "turn on" | "turn off" | "toggle";
 type InstructionString =
   `${Action} ${number},${number} through ${number},${number}`;
 
-type Row = boolean[];
+type Row = number[];
 
 export type Instruction = {
   action: Action;
@@ -36,11 +36,11 @@ export const runInstruction = (rows: Row[], input: Instruction) => {
       ...row.slice(input.xA, input.xB + 1).map((c) => {
         switch (input.action) {
           case "toggle":
-            return !c;
+            return c + 2;
           case "turn on":
-            return true;
+            return c + 1;
           case "turn off":
-            return false;
+            return Math.max(c - 1, 0);
         }
       }),
       ...row.slice(input.xB + 1, undefined),
@@ -52,13 +52,10 @@ export const runInstruction = (rows: Row[], input: Instruction) => {
 export const runInstructions = (start: Row[], instructions: Instruction[]) =>
   instructions.reduce(runInstruction, start);
 
-export const createGrid = (x, y) => {
+export const createGrid = (x: number, y: number) => {
   return new Array(y).fill(new Array(x).fill(false));
 };
 
-export const countTurnedOnLights = (rows: Row[]) => {
-  return rows.reduce(
-    (a, b) => a + b.reduce((a, b) => a + (b as unknown as number), 0),
-    0
-  );
+export const countBrightness = (rows: Row[]) => {
+  return rows.reduce((a, b) => a + b.reduce((a, b) => a + b, 0), 0);
 };
