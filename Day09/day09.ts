@@ -14,8 +14,6 @@ export const doit = (distances: Data[]) => {
     .flatMap((d) => d.cities)
     .filter((d, i, arr) => arr.findIndex((db) => db === d) === i);
 
-  console.log(cities);
-
   return cities.reduce(
     (min, curr) => Math.max(min, findShortestPath(curr, distances)),
     0
